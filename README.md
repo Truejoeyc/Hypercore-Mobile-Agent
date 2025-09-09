@@ -1,75 +1,47 @@
-# Hypercore-Mobile-Agent
-Nexus Assistant is a custom Android digital assistant that replaces Gemini/Google. It listens, speaks, and executes actions by connecting to your GPT/Nexus backend. Supports voice input, tool calls (dial, sms, navigate, torch, apps), and a dark Nexus theme with auto-built APK.
-Nexus Assistant (Android)
+# Nexus Assistant (Android)
 
-Nexus Assistant is a custom Android digital assistant designed to replace Gemini/Google as your default system assistant. It connects directly to your Nexus/GPT backend, processes voice input, speaks responses, and executes real actions on your device with a sleek black/blue theme and alien branding.
+A minimal, dark-themed Android assistant that replaces Gemini/Google as your system assistant,
+pipes speech to your Nexus (GPT) endpoint, speaks back with TTS, and **executes actions** via a simple tool registry.
 
-✨ Features
+## What it can do now
+- System assistant intent (`ACTION_ASSIST`): long-press or assistant gesture opens Nexus.
+- Voice in → sends to your Nexus endpoint (`/chat`) → parses JSON tool calls.
+- Built‑in tools: `dial`, `sms`, `navigate`, `open_app`, `torch` (flashlight), `open_settings`, `calendar_insert`.
+- Settings screen to set **Endpoint URL** and optional **API key**.
+- Black/blue Nexus theme + alien icon.
 
-Full System Assistant Integration
-Set Nexus as your default digital assistant for long-press Power or swipe gestures.
+## Quick install (no coding)
+1. Zip already includes a GitHub Actions workflow.
+2. Create a new GitHub repo and upload this folder.
+3. Go to **Actions** → wait for the **Build Nexus Assistant** job → **Download Artifact** → you'll get `app-debug.apk`.
+4. Sideload on your phone. Then set **Settings → Apps → Default Apps → Digital Assistant → Nexus**.
+5. Open Nexus → tap the gear (bottom-right) and set **Endpoint URL** to your GPT/Nexus HTTP endpoint.
 
-Voice Input & TTS Output
-Speech recognition captures your queries, Nexus backend responds, and results are spoken aloud.
+## Expected endpoint format
+POST `Endpoint URL` with JSON body:
+```json
+{ "query": "text user said" }
+```
+Respond with either:
+```json
+{ "reply": "text to speak back" }
+```
+or a tool call:
+```json
+{ "nexus_action": true, "tool": "navigate", "args": {"where": "123 Main St"}, "say": "Starting navigation."}
+```
 
-Action Toolkit (JSON Tool Calls)
+## Permissions
+- Microphone (speech recognition)
+- Internet
+- Camera (for torch control)
 
-📞 Dial phone numbers
+> Note: Direct Wi‑Fi/BT toggles are restricted on modern Android; `open_settings` opens the relevant panel.
+> For deeper control, consider Shizuku or an AccessibilityService (not included by default).
 
-💬 Compose SMS messages
+## Build locally (optional)
+- Install Android Studio (JDK 17).
+- Open project → Run.
+- Debug APK is at `app/build/outputs/apk/debug/app-debug.apk`.
 
-🗺 Start Google Maps navigation
-
-🔦 Toggle flashlight
-
-📅 Insert calendar events
-
-⚙️ Open settings panels (Wi-Fi, Bluetooth, Location, Internet)
-
-📲 Launch apps by package
-
-Configurable Settings
-Endpoint URL, optional API key, and “Speak responses” toggle.
-
-Dark Nexus Theme
-Matrix-style interface with alien head icon.
-
-🚀 Quick Start
-
-Upload this project to your GitHub repo.
-
-Go to Actions → run Build Nexus Assistant → download the artifact app-debug.apk.
-
-Transfer and install the APK on your Android phone.
-
-Android Settings → Apps → Default Apps → Digital Assistant app → Nexus.
-
-Open Nexus → ⚙️ → set your GPT/Nexus endpoint and API key.
-
-🛠 How It Works
-
-Nexus Assistant sends { "query": "…" } to your endpoint.
-
-Your endpoint responds with either:
-
-{ "reply": "…" } → Nexus speaks back, or
-
-A tool call:
-
-{
-  "nexus_action": true,
-  "tool": "navigate",
-  "args": {"where": "123 Main St"},
-  "say": "Starting navigation."
-}
-
-
-Nexus immediately executes the requested action.
-
-📌 Notes
-
-Direct toggles for Wi-Fi/BT are restricted by Android; Nexus opens the correct settings panel.
-
-Flashlight control requires camera permission on first use.
-
-You can expand with Shizuku or AccessibilityService for deeper system integration.
+Enjoy.
